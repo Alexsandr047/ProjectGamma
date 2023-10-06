@@ -8,17 +8,13 @@
 #include "Core/PG_AssetManager.h"
 #include "Core/PG_CoreTypes.h"
 #include "Core/PG_GameInstance.h"
-#include "Core/ItemsData/PG_Character_PlayerData.h"
+#include "InventorySystem/PG_QuickBarComponent.h"
 #include "InventorySystem/Inventory/Fragments/CIS_ItemFragment_EquipmentItem.h"
 #include "InventorySystem/Inventory/Fragments/CIS_ItemFragment_SetStats.h"
+#include "InventorySystem/ItemsData/PG_Character_PlayerData.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/PG_PlayerController.h"
 
-
-UPG_PlayerData::UPG_PlayerData(const FObjectInitializer& ObjectInitializer)
-{
-	
-}
 
 UPG_GameInstance* UPG_ItemsSubsystem::GetGameGameInstance()
 {
@@ -32,9 +28,9 @@ FString UPG_ItemsSubsystem::GetPlayerID()
 	return  GetGameGameInstance()->GetPlayerId();
 }
 
-void UPG_ItemsSubsystem::ParsePlayerData(APG_PlayerController* PlayerController, FOnItemParsed ItemParsed, FString PlayerData)
+void UPG_ItemsSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData)
 {
-	check(PlayerController);
+	check(QuickBarComponent);
 	
 	const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(PlayerData);
 	TSharedPtr<FJsonValue> JsonValue;	
@@ -43,15 +39,15 @@ void UPG_ItemsSubsystem::ParsePlayerData(APG_PlayerController* PlayerController,
 		UPG_PlayerData* Character_Data = nullptr;
 		const TSharedPtr<FJsonObject>* JsonObject;
 		JsonValue->TryGetObject(JsonObject);
-		switch (PlayerController->PlayerTypeData)
+		
+		switch (QuickBarComponent->PlayerTypeData)
 		{
 		case EPlayerDataType::Commander:
-
 			Character_Data = NewObject<UPG_Character_PlayerData>(this);
 			const TSharedPtr<FJsonObject>* CommanderObject;
 			JsonObject->Get()->TryGetObjectField("Commander", CommanderObject);
 			ParseCharacterItem(CommanderObject, Cast<UPG_Character_PlayerData>(Character_Data));
-			PlayerController->SetParsedPlayerData(Character_Data);
+			QuickBarComponent->SetParsedPlayerData(Character_Data);
 			break;
 			
 		case EPlayerDataType::Squad:
@@ -61,7 +57,7 @@ void UPG_ItemsSubsystem::ParsePlayerData(APG_PlayerController* PlayerController,
 			break;
 		}
 				
-		ItemParsed.Broadcast(PlayerController, Character_Data);
+		ItemParsed.Broadcast(QuickBarComponent, Character_Data);
 		ItemParsed.Clear();
 	}
 	else

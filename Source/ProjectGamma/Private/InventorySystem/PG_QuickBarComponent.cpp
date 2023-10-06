@@ -5,13 +5,13 @@
 
 #include "Core/CIS_UtilityFunctionLibrary.h"
 #include "Core/PG_AssetManager.h"
-#include "Core/ItemsData/PG_Character_PlayerData.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "InventorySystem/Inventory/CIS_ItemInstance.h"
 #include "InventorySystem/Inventory/CIS_ItemManagerComponent.h"
 #include "InventorySystem/Equipment/CIS_EquipmentInstance.h"
 #include "InventorySystem/Inventory/Fragments/CIS_ItemFragment_EquipmentItem.h"
 #include "InventorySystem/Inventory/Fragments/CIS_ItemFragment_SetStats.h"
+#include "InventorySystem/ItemsData/PG_Character_PlayerData.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/PG_PlayerController.h"
 #include "Weapons/PG_WeaponInstance.h"
@@ -168,7 +168,7 @@ void UPG_QuickBarComponent::InitEquip(UCIS_ItemManagerComponent* _ItemManager)
 
 	if(APG_PlayerController* PC = GetPlayerController())
 	{
-		if(UPG_Character_PlayerData* CharacterData = Cast<UPG_Character_PlayerData>( PC->GetPlayerData()))
+		if(UPG_Character_PlayerData* CharacterData = Cast<UPG_Character_PlayerData>(GetPlayerData()))
 		{
 			TArray<FString> EquipSlots;
 			TArray<FModifiableItemBase> ParsedItems;
@@ -479,6 +479,21 @@ void UPG_QuickBarComponent::InitItemsToInventory(TArray<FModifiableItemBase> Ite
 		}
 	});
 	UCIS_UtilityFunctionLibrary::AsyncLoadClassObject(GetWorld(),DefinitionsToLoad, OnAsyncLoadOptionsDefenitionsCompleteDelagate);*/
+}
+
+void UPG_QuickBarComponent::SetParsedPlayerData(UPG_PlayerData* _PlayerData)
+{
+	PlayerData = _PlayerData;
+	
+	if(ACIS_Character* CurrentPawn = Cast<ACIS_Character>(GetPlayerController()->GetPawn()))
+		CurrentPawn->InitCharacterData();
+}
+
+void UPG_QuickBarComponent::InitializeClientData_Implementation()
+{
+	/*ASRBasePlayerState* PS = GetPlayerState<ASRBasePlayerState>();
+	PS->NakamaPlayerID = InPlayerNakamaID;*/
+	OnClientDataInitialized.Broadcast(this);
 }
 
 void UPG_QuickBarComponent::EquipEquipmentTypeOnCharacter(UCIS_ItemDefinition* Definition, EPG_EquipmentType EquipmentType)

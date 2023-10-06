@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventorySystem/PG_QuickBarComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/GameMode.h"
 #include "InventorySystem/PG_ItemsSubsystem.h"
@@ -29,7 +30,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartPlayerInitializedClientData(APlayerController* NewPlayer);
 	UFUNCTION()
-	virtual void OnPlayerInitializedClientData(APG_PlayerController* Player);
+	virtual void OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent);
 	
 	// Restart (respawn) the specified player or bot next frame
 	// - If bForceReset is true, the controller will be reset this frame (abandoning the currently possessed pawn, if any)

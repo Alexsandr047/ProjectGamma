@@ -8,6 +8,7 @@
 #include "Core/PG_GameInstance.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_QuickBarComponent.h"
 #include "Player/PG_PlayerController.h"
 
 APG_GameMode::APG_GameMode()
@@ -24,15 +25,15 @@ void APG_GameMode::PostLogin(APlayerController* NewPlayer)
 
 void APG_GameMode::StartPlayerInitializedClientData(APlayerController* NewPlayer)
 {
-	auto BattlePC = Cast<APG_PlayerController>(NewPlayer);
-	check(BattlePC);
-	BattlePC->OnClientDataInitialized.AddDynamic(this, &APG_GameMode::OnPlayerInitializedClientData);
+	UPG_QuickBarComponent* QuickBarComponent = NewPlayer->FindComponentByClass<UPG_QuickBarComponent>();
+	if(QuickBarComponent)
+		QuickBarComponent->OnClientDataInitialized.AddDynamic(this, &APG_GameMode::OnPlayerInitializedClientData);
 }
 
-void APG_GameMode::OnPlayerInitializedClientData(APG_PlayerController* Player)
+void APG_GameMode::OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent)
 {
 	if(UPG_GameInstance * GI = Cast<UPG_GameInstance>(GetGameInstance()))
-		GI->GetPlayerData(Player);
+		GI->GetPlayerData(QuickBarComponent);
 }
 
 void APG_GameMode::RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset)

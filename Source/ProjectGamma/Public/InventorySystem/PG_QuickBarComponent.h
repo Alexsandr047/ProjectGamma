@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/PG_CoreTypes.h"
 #include "InventorySystem/Equipment/CIS_QuickBarComponent.h"
+#include "ItemsData/PG_PlayerData.h"
 #include "PG_QuickBarComponent.generated.h"
 
 /**
@@ -45,7 +46,7 @@ struct FPG_GetItemsInInventoryMessage
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnItemLoaded);
 DECLARE_DELEGATE_OneParam(FOnPreparingItemDefinitions, const TArray<UCIS_ItemDefinition*>&);
-//DECLARE_DELEGATE_OneParam(FOnEventDelegate,  const TArray<UCIS_ItemDefinition*>&);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FClientDataInitialized, class UPG_QuickBarComponent*, QuickBarComponent);
 
 UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent))
 class PROJECTGAMMA_API UPG_QuickBarComponent : public UCIS_QuickBarComponent
@@ -131,4 +132,28 @@ public:
 	UPROPERTY()
 	UCIS_ItemManagerComponent* ItemManager;
 
+#pragma region ParsedData;
+	
+public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	EPlayerDataType PlayerTypeData;
+	
+	// Broadcast on server, when receive initializing data from client
+	UPROPERTY()
+	FClientDataInitialized OnClientDataInitialized;
+
+	UFUNCTION()
+	void SetParsedPlayerData(UPG_PlayerData* PlayerData);
+	UPG_PlayerData* GetPlayerData() { return PlayerData; }
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void InitializeClientData();
+	
+protected:
+
+	UPROPERTY()
+	UPG_PlayerData* PlayerData;	
+
+#pragma endregion
 };

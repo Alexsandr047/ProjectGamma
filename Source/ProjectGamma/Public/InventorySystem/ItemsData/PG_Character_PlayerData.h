@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "PG_PlayerData.h"
+#include "Core/PG_CoreTypes.h"
 #include "PG_Character_PlayerData.generated.h"
 
 /**

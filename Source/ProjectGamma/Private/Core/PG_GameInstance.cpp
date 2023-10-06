@@ -52,7 +52,6 @@ FString UPG_GameInstance::GetShipBaseData()
 FString UPG_GameInstance::GetCommanderData()
 {
 	FString JsonString = "";
-	//const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/" + GetPlayerId() +"/PlayerItem.json";
 	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/LastCommander.json";
 	if(!FFileHelper::LoadFileToString(JsonString,*JsonFilePath))
 	{
@@ -73,6 +72,20 @@ FString UPG_GameInstance::GetCommanderData()
 FString UPG_GameInstance::GetSquadData()
 {
 	FString JsonString = "";
+	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/" + GetPlayerId() +"/PlayerItem.json";
+	if(!FFileHelper::LoadFileToString(JsonString,*JsonFilePath))
+	{
+		auto DT = UPG_AssetManager::Get().GetItemsData()->DefaultItemPresets;
+		if(DT)
+		{		
+			const auto ModuleRow = DT->FindRow<FDefaultItemPresets>(FName(TEXT("Default_Character")), "Context_String_Item_Default_Character");
+			JsonString = ModuleRow->Preset;
+		}		
+	}
+	//Displaying the json in a string format inside the output log
+	GLog->Log("Json String:");
+	GLog->Log(JsonString);
+
 	return JsonString;
 }
 
@@ -99,23 +112,23 @@ void UPG_GameInstance::SetPlayerId(const FString& _PlayerId)
 	PlayerId = _PlayerId;
 }
 
-void UPG_GameInstance::GetPlayerData(APG_PlayerController* PlayerController)
+void UPG_GameInstance::GetPlayerData(UPG_QuickBarComponent* QuickBarComponent)
 {
 	FString PlayerData = "";
-	PlayerData = PlayerDataFunction[PlayerController->PlayerTypeData]();
+	PlayerData = PlayerDataFunction[QuickBarComponent->PlayerTypeData]();
 
 
 	UPG_ItemsSubsystem* ItemsSubsystem = GetSubsystem<UPG_ItemsSubsystem>();
 	check(ItemsSubsystem)
 	FOnItemParsed ItemParsed;
 	ItemParsed.AddDynamic(this, &ThisClass::SetParsedItemData);
-	ItemsSubsystem->ParsePlayerData(PlayerController,ItemParsed, PlayerData);
+	ItemsSubsystem->ParsePlayerData(QuickBarComponent,ItemParsed, PlayerData);
 }
 
-void UPG_GameInstance::SetParsedItemData(APG_PlayerController* PlayerController,
+void UPG_GameInstance::SetParsedItemData(UPG_QuickBarComponent* QuickBarComponent,
 	UPG_PlayerData* PlayerData)
 {
-	check(PlayerController);
+	check(QuickBarComponent);
 
 	//PlayerController->SetParsedItemData(PlayerItems, EquipItems);
 }

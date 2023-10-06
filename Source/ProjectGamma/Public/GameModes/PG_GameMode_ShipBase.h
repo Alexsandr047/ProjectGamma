@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PG_GameMode.h"
 #include "Core/PG_CoreTypes.h"
-#include "GameFramework/GameModeBase.h"
 #include "Map/Hub/PG_Hub_MapGenerator.h"
 #include "PG_GameMode_ShipBase.generated.h"
 
@@ -20,7 +20,7 @@ class APG_Hub_MapGenerator;
 
 
 UCLASS()
-class PROJECTGAMMA_API APG_GameMode_ShipBase : public AGameModeBase
+class PROJECTGAMMA_API APG_GameMode_ShipBase : public APG_GameMode
 {
 	GENERATED_BODY()
 	
@@ -32,9 +32,8 @@ public:
 
 	UPROPERTY()
 	APG_Hub_MapGenerator* MapGenerator = nullptr;
-
-	UFUNCTION()
-	void OnPlayerInitializedClientData(APG_PlayerController* Player);
+	
+	virtual void OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent) override;
 
 	UFUNCTION()
 	void SetParsedItemData(APG_ShipBasePlayerController* PlayerController, FShipData ShipData);
@@ -55,3 +54,4 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectGamma|Room Generator")
 	TSubclassOf<APG_Hub_MapGenerator> MapGeneratorClass;
 };
+

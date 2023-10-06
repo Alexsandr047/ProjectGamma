@@ -10,28 +10,14 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "PG_ItemsSubsystem.generated.h"
 
-
-UCLASS(Abstract)
-class PROJECTGAMMA_API UPG_PlayerData : public UObject
-{
-	GENERATED_BODY()
-
-public:
-
-	UPG_PlayerData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	
-	//TArray<FModifiableItemBase>, PlayerItems, TArray<FEquippedItemBase>, EquipItems
-};
-
-
 DECLARE_DELEGATE_OneParam(FAsyncLoadClassObjectDelegate, const TArray<TSubclassOf<UObject>>&);
 
 class APG_ShipBasePlayerController;
 class UPG_GameInstance;
 class UPG_Character_PlayerData;
-
+class UPG_QuickBarComponent;
 //DECLARE_MULTICAST_DELEGATE(FOnItemParsed);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemParsed,APG_PlayerController*, PlayerController, UPG_PlayerData*, PlayerData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemParsed, class UPG_QuickBarComponent*, QuickBarComponent, UPG_PlayerData*, PlayerData);
 
 UCLASS()
 class PROJECTGAMMA_API UPG_ItemsSubsystem : public UGameInstanceSubsystem
@@ -43,7 +29,7 @@ public:
 	UPG_GameInstance* GetGameGameInstance();
 	FString GetPlayerID();
 	UFUNCTION()
-	void ParsePlayerData(APG_PlayerController* PlayerController, FOnItemParsed ItemParsed, FString PlayerData);
+	void ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData);
 	
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void SaveJsonFile();

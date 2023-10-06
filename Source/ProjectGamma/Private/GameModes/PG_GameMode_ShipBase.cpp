@@ -17,15 +17,11 @@ APG_GameMode_ShipBase::APG_GameMode_ShipBase()
 }
 
 void APG_GameMode_ShipBase::PostLogin(APlayerController* NewPlayer)
-{	
-	auto ShipPC = Cast<APG_ShipBasePlayerController>(NewPlayer);
-	check(ShipPC);
-	ShipPC->OnClientDataInitialized.AddDynamic(this, &ThisClass::OnPlayerInitializedClientData);
-	
+{		
 	Super::PostLogin(NewPlayer);	
 }
 
-void APG_GameMode_ShipBase::OnPlayerInitializedClientData(APG_PlayerController* Player)
+void APG_GameMode_ShipBase::OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent)
 {
 	UGameInstance* GI = GetGameInstance();
 
@@ -34,7 +30,7 @@ void APG_GameMode_ShipBase::OnPlayerInitializedClientData(APG_PlayerController* 
 
 	FOnShipDataParsed ShipDataParsed;
 	ShipDataParsed.AddDynamic(this, &ThisClass::SetParsedItemData);
-	RoomsSubsystem->ReadJsonFileAndMakeShipData(Cast<APG_ShipBasePlayerController>(Player), ShipDataParsed);	
+	RoomsSubsystem->ReadJsonFileAndMakeShipData(Cast<APG_ShipBasePlayerController>(QuickBarComponent->GetPlayerController()), ShipDataParsed);	
 }
 
 void APG_GameMode_ShipBase::SetParsedItemData(APG_ShipBasePlayerController* PlayerController,
