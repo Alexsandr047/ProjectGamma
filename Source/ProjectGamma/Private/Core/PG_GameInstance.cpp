@@ -98,12 +98,12 @@ void UPG_GameInstance::AuthorizePlayer(const FString& _PlayerId, const FString _
 	{
 		FString JsonString = "";
 		const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ PlayerId +"/ShipData.json";
+		SetPlayerId(_PlayerId);
 		if(FFileHelper::LoadFileToString(JsonString,*JsonFilePath))
-		{
-			SetPlayerId(_PlayerId);
 			AuthorizationComplete.Broadcast(false);
-			AuthorizationComplete.Clear();
-		}
+		else
+			AuthorizationComplete.Broadcast(false);
+		AuthorizationComplete.Clear();
 	}
 }
 
