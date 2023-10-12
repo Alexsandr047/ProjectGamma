@@ -14,7 +14,7 @@
 class UPG_ProjectGamma_Settings;
 class APG_PlayerController;
 class UPG_QuickBarComponent;
-
+class APG_GameMode;
 UCLASS()
 class PROJECTGAMMA_API UPG_GameInstance : public UGameInstance
 {
@@ -24,8 +24,6 @@ public:
 
 	UPG_GameInstance();
 
-	/*UFUNCTION(BlueprintCallable)
-	void Set*/
 protected:
 
 	UFUNCTION(BlueprintCallable)
@@ -58,9 +56,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Id")
 	FString GetPlayerId() const { return PlayerId; }
 
-	void GetPlayerData(UPG_QuickBarComponent* QuickBarComponent);
-	UFUNCTION()
-	void SetParsedItemData(UPG_QuickBarComponent* QuickBarComponent, UPG_PlayerData* PlayerData);
-	
+	void GetPlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed);
+
 };
 

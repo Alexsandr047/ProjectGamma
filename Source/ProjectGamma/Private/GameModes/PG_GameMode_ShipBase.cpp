@@ -5,10 +5,9 @@
 
 #include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "Map/Hub/PG_Hub_RoomsSubsystem.h"
 #include "OnlineBeaconHost.h"
+#include "InventorySystem/ItemsData/PG_Ship_PlayerData.h"
 #include "OnlineBeacons/PG_OnlineBeaconHostObject.h"
-#include "Player/PG_PlayerController.h"
 #include "Player/PG_ShipBasePlayerController.h"
 
 APG_GameMode_ShipBase::APG_GameMode_ShipBase()
@@ -23,18 +22,28 @@ void APG_GameMode_ShipBase::PostLogin(APlayerController* NewPlayer)
 
 void APG_GameMode_ShipBase::OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent)
 {
-	UGameInstance* GI = GetGameInstance();
+	Super::OnPlayerInitializedClientData(QuickBarComponent);
+	/*UGameInstance* GI = GetGameInstance();
 
 	UPG_Hub_RoomsSubsystem* RoomsSubsystem = GI->GetSubsystem<UPG_Hub_RoomsSubsystem>();
 	check(RoomsSubsystem);
 
 	FOnShipDataParsed ShipDataParsed;
 	ShipDataParsed.AddDynamic(this, &ThisClass::SetParsedRoomData);
-	RoomsSubsystem->ReadJsonFileAndMakeShipData(Cast<APG_ShipBasePlayerController>(QuickBarComponent->GetPlayerController()), ShipDataParsed);	
+	RoomsSubsystem->ReadJsonFileAndMakeShipData(Cast<APG_ShipBasePlayerController>(QuickBarComponent->GetPlayerController()), ShipDataParsed);	*/
+}
+
+void APG_GameMode_ShipBase::SetParsedPlayerData(UPG_QuickBarComponent* QuickBarComponent, UPG_PlayerData* PlayerData)
+{
+	check(PlayerData);
+	UPG_Ship_PlayerData* Ship_PlayerData = Cast<UPG_Ship_PlayerData>(PlayerData);
+	APG_ShipBasePlayerController* ShipBasePlayerController = Cast<APG_ShipBasePlayerController>(QuickBarComponent->GetPlayerController());
+	if(Ship_PlayerData && ShipBasePlayerController)
+		SetParsedRoomData(ShipBasePlayerController, Ship_PlayerData->ShipData);
 }
 
 void APG_GameMode_ShipBase::SetParsedRoomData(APG_ShipBasePlayerController* PlayerController,
-	FShipData ShipData)
+                                              FShipData ShipData)
 {
 	//MapGenerator = Cast<APG_Hub_MapGenerator>(UGameplayStatics::GetActorOfClass(this, APG_Hub_MapGenerator::StaticClass()));
 	FActorSpawnParameters SpawnParams;

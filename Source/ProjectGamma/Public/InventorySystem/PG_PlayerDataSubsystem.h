@@ -6,7 +6,7 @@
 #include "PG_QuickBarComponent.h"
 #include "Core/PG_CoreTypes.h"
 #include "InventorySystem/Inventory/CIS_ItemDefinition.h"
-#include "Map/Hub/PG_Hub_RoomsSubsystem.h"
+#include "Map/Hub/PG_Hub_MapGenerator.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "PG_PlayerDataSubsystem.generated.h"
 
@@ -16,6 +16,8 @@ class APG_ShipBasePlayerController;
 class UPG_GameInstance;
 class UPG_Character_PlayerData;
 class UPG_QuickBarComponent;
+class UPG_Ship_PlayerData;
+
 //DECLARE_MULTICAST_DELEGATE(FOnItemParsed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemParsed, class UPG_QuickBarComponent*, QuickBarComponent, UPG_PlayerData*, PlayerData);
 
@@ -46,6 +48,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReadLastCommanderFile();
+
+	//ShipData
+	UFUNCTION()
+	void ReadJsonFileAndMakeShipData(FString PlayerData, UPG_Ship_PlayerData* Ship_PlayerData);
+	UFUNCTION()
+	void WriteJsonFileAboutShipData(APG_ShipBasePlayerController* PlayerController, APG_Hub_MapGenerator* MapGenerator);
+
 protected:
 	
 	UPROPERTY()

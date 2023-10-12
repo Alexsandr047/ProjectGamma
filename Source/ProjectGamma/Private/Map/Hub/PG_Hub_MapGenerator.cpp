@@ -4,9 +4,9 @@
 #include "Map/Hub/PG_Hub_MapGenerator.h"
 
 #include "Character/PG_Skill_Subsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "Map/Hub/PG_Hub_RoomCondition_Created.h"
 #include "Map/Hub/PG_Hub_RoomGenerator.h"
-#include "Map/Hub/PG_Hub_RoomsSubsystem.h"
 
 
 void APG_Hub_MapGenerator::SetDateTo(FDateTime _DateTo)
@@ -152,10 +152,10 @@ void APG_Hub_MapGenerator::UpdateData()
 {
 	UGameInstance* GI = GetGameInstance();
 
-	UPG_Hub_RoomsSubsystem* RoomsSubsystem = GI->GetSubsystem<UPG_Hub_RoomsSubsystem>();
-	check(RoomsSubsystem);
+	UPG_PlayerDataSubsystem* PlayerDataSubsystem = GI->GetSubsystem<UPG_PlayerDataSubsystem>();
+	check(PlayerDataSubsystem);
 
-	RoomsSubsystem->WriteJsonFileAboutShipData(nullptr,this);
+	PlayerDataSubsystem->WriteJsonFileAboutShipData(nullptr,this);
 }
 
 TArray<FRoomDescription> APG_Hub_MapGenerator::GetRoomsCheckList()

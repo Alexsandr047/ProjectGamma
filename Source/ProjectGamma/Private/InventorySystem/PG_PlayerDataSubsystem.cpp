@@ -4,15 +4,19 @@
 #include "InventorySystem/PG_PlayerDataSubsystem.h"
 
 #include "JsonObjectConverter.h"
+#include "Character/PG_Skill_Subsystem.h"
 #include "Core/CIS_CoreTypes.h"
 #include "Core/PG_AssetManager.h"
 #include "Core/PG_CoreTypes.h"
 #include "Core/PG_GameInstance.h"
+#include "Core/PG_UtilityFunctionLibrary.h"
 #include "InventorySystem/PG_QuickBarComponent.h"
 #include "InventorySystem/Inventory/Fragments/CIS_ItemFragment_EquipmentItem.h"
 #include "InventorySystem/Inventory/Fragments/CIS_ItemFragment_SetStats.h"
 #include "InventorySystem/ItemsData/PG_Character_PlayerData.h"
+#include "InventorySystem/ItemsData/PG_Ship_PlayerData.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Map/Hub/PG_Hub_RoomGenerator.h"
 #include "Player/PG_PlayerController.h"
 
 
@@ -31,31 +35,34 @@ FString UPG_PlayerDataSubsystem::GetPlayerID()
 void UPG_PlayerDataSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData)
 {
 	check(QuickBarComponent);
-	
-	const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(PlayerData);
-	TSharedPtr<FJsonValue> JsonValue;	
-	if (FJsonSerializer::Deserialize(Reader, JsonValue) && JsonValue.IsValid())
-	{
-		UPG_PlayerData* Character_Data = nullptr;
-		const TSharedPtr<FJsonObject>* JsonObject;
-		JsonValue->TryGetObject(JsonObject);
 		
-		if(QuickBarComponent->PlayerTypeData ==  EPlayerDataType::Commander)
+	UPG_PlayerData* Player_Data = nullptr;
+		
+	if(QuickBarComponent->PlayerTypeData ==  EPlayerDataType::Commander)
+	{
+		const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(PlayerData);
+		TSharedPtr<FJsonValue> JsonValue;	
+		if (FJsonSerializer::Deserialize(Reader, JsonValue) && JsonValue.IsValid())
 		{
-			Character_Data = NewObject<UPG_Character_PlayerData>(this);
+			const TSharedPtr<FJsonObject>* JsonObject;
+			JsonValue->TryGetObject(JsonObject);
+		
+			Player_Data = NewObject<UPG_Character_PlayerData>(this);
 			const TSharedPtr<FJsonObject>* CommanderObject;
 			JsonObject->Get()->TryGetObjectField("Commander", CommanderObject);
-			ParseCharacterItem(CommanderObject, Cast<UPG_Character_PlayerData>(Character_Data));
-			QuickBarComponent->SetParsedPlayerData(Character_Data);
+			ParseCharacterItem(CommanderObject, Cast<UPG_Character_PlayerData>(Player_Data));
+			QuickBarComponent->SetParsedPlayerData(Player_Data);
 		}
-				
-		ItemParsed.Broadcast(QuickBarComponent, Character_Data);
-		ItemParsed.Clear();
+		else
+			GLog->Log("couldn't deserialize");
 	}
-	else
+	if(QuickBarComponent->PlayerTypeData ==  EPlayerDataType::ShipBase)
 	{
-		GLog->Log("couldn't deserialize");
+		Player_Data = NewObject<UPG_Ship_PlayerData>(this);
+		ReadJsonFileAndMakeShipData(PlayerData,Cast<UPG_Ship_PlayerData>(Player_Data));
 	}
+	ItemParsed.Broadcast(QuickBarComponent, Player_Data);
+	ItemParsed.Clear();
 }
 
 void UPG_PlayerDataSubsystem::SaveJsonFile()
@@ -347,5 +354,118 @@ void UPG_PlayerDataSubsystem::ReadLastCommanderFile()
 	//Displaying the json in a string format inside the output log
 	GLog->Log("Json String:");
 	GLog->Log(JsonString);
+}
+
+void UPG_PlayerDataSubsystem::ReadJsonFileAndMakeShipData(FString PlayerData, UPG_Ship_PlayerData* Ship_PlayerData)
+{
+	check(Ship_PlayerData);
+	
+	const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(PlayerData);
+	TSharedPtr<FJsonValue> JsonValue;
+	
+	if (FJsonSerializer::Deserialize(Reader, JsonValue) && JsonValue.IsValid())
+	{
+		const TSharedPtr<FJsonObject>* JsonObject;
+		JsonValue->TryGetObject(JsonObject);
+		
+		FString DateTo = "";
+		JsonObject->Get()->TryGetStringField("DateTo", DateTo);
+		FDateTime::Parse(DateTo, Ship_PlayerData->ShipData.DateTo);
+
+		const TArray<TSharedPtr<FJsonValue>>* RoomsJsonData;
+		JsonObject->Get()->TryGetArrayField("Rooms",RoomsJsonData);
+		for (const auto& RoomValue : *RoomsJsonData)
+		{
+			const TSharedPtr<FJsonObject>* RoomValueObject;
+			if(RoomValue->TryGetObject(RoomValueObject))
+			{
+				FShipRoomBase RoomData;
+				if(FJsonObjectConverter::JsonObjectToUStruct<FShipRoomBase>(RoomValueObject->ToSharedRef(), &RoomData, 0, 0))
+					Ship_PlayerData->ShipData.ShipRooms.Add(RoomData);
+			}
+		}
+		const TArray<TSharedPtr<FJsonValue>>* SquadsJsonData;
+		JsonObject->Get()->TryGetArrayField("Squads",SquadsJsonData);
+		for (const auto& RoomValue : *RoomsJsonData)
+		{
+			const TSharedPtr<FJsonObject>* RoomValueObject;
+			if(RoomValue->TryGetObject(RoomValueObject))
+			{
+				FShipRoomBase RoomData;
+				if(FJsonObjectConverter::JsonObjectToUStruct<FShipRoomBase>(RoomValueObject->ToSharedRef(), &RoomData, 0, 0))
+					Ship_PlayerData->ShipData.ShipRooms.Add(RoomData);
+			}
+		}
+	}
+}
+
+void UPG_PlayerDataSubsystem::WriteJsonFileAboutShipData(APG_ShipBasePlayerController* PlayerController,
+	APG_Hub_MapGenerator* MapGenerator)
+{
+	UPG_GameInstance* GI = GetGameGameInstance();
+	if(!GI)
+	check(PlayerController);
+	
+	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ GI->GetPlayerId() +"/ShipData.json";
+	FString JsonString;
+
+	TSharedPtr<FJsonObject> JsonObj = MakeShareable(new FJsonObject);
+	JsonObj->SetStringField("Player", GI->GetPlayerId());
+	JsonObj->SetStringField("DateTo", MapGenerator->DateTo.ToString());
+
+	TArray<TSharedPtr<FJsonValue> > RoomsObjArray;	
+	for(auto& RoomGenerator : MapGenerator->GetRoomGenerators())
+	{
+		if(!RoomGenerator)
+			return;
+		
+		TSharedPtr<FJsonObject> TestStructJsonObject = FJsonObjectConverter::UStructToJsonObject<FShipRoomBase>(RoomGenerator->GetRoomData());
+		TSharedRef<FJsonValueObject> JsonValue = MakeShareable( new FJsonValueObject( TestStructJsonObject) );
+		
+		RoomsObjArray.Add(JsonValue);
+	}	
+	JsonObj->SetArrayField("Rooms", RoomsObjArray);
+
+	TArray<TSharedPtr<FJsonValue> > TreeObjArray;
+	UPG_Skill_Subsystem* Skill_Subsystem = GI->GetSubsystem<UPG_Skill_Subsystem>();
+	check(Skill_Subsystem);
+
+	if(UPG_Skill_Tree* Skill_Tree = Skill_Subsystem->GetSkillTreeById("TechTree"))
+	{
+		for(auto& TechSkill : Skill_Tree->GetSkillsData())
+		{
+			if(!TechSkill.IsValid())
+				return;
+			
+			TSharedPtr<FJsonObject> TestStructJsonObject = FJsonObjectConverter::UStructToJsonObject<FSkillParseData>(TechSkill);
+			TSharedRef<FJsonValueObject> JsonValue = MakeShareable( new FJsonValueObject( TestStructJsonObject) );
+		
+			TreeObjArray.Add(JsonValue);
+		}
+	}
+	JsonObj->SetArrayField("TechTree", TreeObjArray);
+
+	TArray<TSharedPtr<FJsonValue> > ResourcesObjArray;
+	for(auto& Resource : MapGenerator->GetShipResources())
+	{
+		TSharedPtr<FJsonObject> TestStructJsonObject = FJsonObjectConverter::UStructToJsonObject<FShipResourceBase>(FShipResourceBase(Resource.Key, Resource.Value));
+		TSharedRef<FJsonValueObject> JsonValue = MakeShareable( new FJsonValueObject( TestStructJsonObject) );
+		ResourcesObjArray.Add(JsonValue);
+	}
+	JsonObj->SetArrayField("Resources", ResourcesObjArray);
+	
+	//JsonObj->SetObjectField(FString::FromInt(111), TestStructJsonObject);
+
+	if(UPG_UtilityFunctionLibrary::GetUseBackEnd())
+	{
+		
+	}
+	else
+	{
+		TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
+		FJsonSerializer::Serialize(JsonObj.ToSharedRef(), Writer);
+	
+		FFileHelper::SaveStringToFile(JsonString,*JsonFilePath);
+	}
 }
 

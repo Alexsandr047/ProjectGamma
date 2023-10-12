@@ -33,7 +33,16 @@ void APG_GameMode::StartPlayerInitializedClientData(APlayerController* NewPlayer
 void APG_GameMode::OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent)
 {
 	if(UPG_GameInstance * GI = Cast<UPG_GameInstance>(GetGameInstance()))
-		GI->GetPlayerData(QuickBarComponent);
+	{
+		FOnItemParsed ItemParsed;
+		ItemParsed.AddDynamic(this, &ThisClass::SetParsedPlayerData);
+		GI->GetPlayerData(QuickBarComponent,ItemParsed);
+	}
+}
+
+void APG_GameMode::SetParsedPlayerData(UPG_QuickBarComponent* QuickBarComponent, UPG_PlayerData* PlayerData)
+{
+	
 }
 
 void APG_GameMode::RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset)

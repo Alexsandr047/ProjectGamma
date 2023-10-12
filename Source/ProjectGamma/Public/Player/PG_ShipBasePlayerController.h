@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "PG_PlayerController.h"
-#include "GameFramework/PlayerController.h"
-#include "Map/Hub/PG_Hub_RoomsSubsystem.h"
 #include "PG_ShipBasePlayerController.generated.h"
 
 

@@ -31,7 +31,8 @@ public:
 	void StartPlayerInitializedClientData(APlayerController* NewPlayer);
 	UFUNCTION()
 	virtual void OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent);
-	
+	UFUNCTION()
+	virtual void SetParsedPlayerData(UPG_QuickBarComponent* QuickBarComponent, UPG_PlayerData* PlayerData);
 	// Restart (respawn) the specified player or bot next frame
 	// - If bForceReset is true, the controller will be reset this frame (abandoning the currently possessed pawn, if any)
 	UFUNCTION(BlueprintCallable)

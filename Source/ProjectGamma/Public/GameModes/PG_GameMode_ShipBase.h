@@ -34,7 +34,7 @@ public:
 	APG_Hub_MapGenerator* MapGenerator = nullptr;
 	
 	virtual void OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent) override;
-
+	virtual void SetParsedPlayerData(UPG_QuickBarComponent* QuickBarComponent, UPG_PlayerData* PlayerData) override;
 	UFUNCTION()
 	void SetParsedRoomData(APG_ShipBasePlayerController* PlayerController, FShipData ShipData);
 	
