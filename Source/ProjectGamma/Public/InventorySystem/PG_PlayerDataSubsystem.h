@@ -8,7 +8,7 @@
 #include "InventorySystem/Inventory/CIS_ItemDefinition.h"
 #include "Map/Hub/PG_Hub_RoomsSubsystem.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "PG_ItemsSubsystem.generated.h"
+#include "PG_PlayerDataSubsystem.generated.h"
 
 DECLARE_DELEGATE_OneParam(FAsyncLoadClassObjectDelegate, const TArray<TSubclassOf<UObject>>&);
 
@@ -20,7 +20,7 @@ class UPG_QuickBarComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemParsed, class UPG_QuickBarComponent*, QuickBarComponent, UPG_PlayerData*, PlayerData);
 
 UCLASS()
-class PROJECTGAMMA_API UPG_ItemsSubsystem : public UGameInstanceSubsystem
+class PROJECTGAMMA_API UPG_PlayerDataSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 

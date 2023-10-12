@@ -4,7 +4,7 @@
 #include "Map/Hub/PG_Hub_RoomGenerator.h"
 
 #include "Core/CIS_UtilityFunctionLibrary.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "Map/Hub/PG_Hub_RoomActor.h"
 #include "Map/Hub/PG_Hub_RoomCondition_Created.h"
 #include "Map/Hub/PG_Hub_RoomCondition_Transitional.h"

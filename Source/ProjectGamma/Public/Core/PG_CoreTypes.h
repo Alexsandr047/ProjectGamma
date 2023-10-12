@@ -221,6 +221,30 @@ struct FShipResourceBase :  public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
+struct FSquad
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Id = "";
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Name = "";
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString CommanderId = "";
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString FighterOne = "";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString FighterTwo = "";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString FighterThree = "";
+};
+
+USTRUCT(BlueprintType)
 struct FMapInfo
 {
 	GENERATED_BODY()

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "PG_CoreTypes.h"
 #include "Engine/GameInstance.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "PG_GameInstance.generated.h"
 
 /**

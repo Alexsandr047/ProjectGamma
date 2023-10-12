@@ -7,7 +7,7 @@
 #include "Character/PG_Character.h"
 #include "Core/PG_GameInstance.h"
 #include "GameFramework/SpectatorPawn.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "InventorySystem/PG_QuickBarComponent.h"
 #include "Player/PG_PlayerController.h"
 

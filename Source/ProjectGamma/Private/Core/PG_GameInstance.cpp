@@ -5,7 +5,7 @@
 
 #include "Core/PG_AssetManager.h"
 #include "Core/PG_UtilityFunctionLibrary.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "Player/PG_PlayerController.h"
 
 UPG_GameInstance::UPG_GameInstance()
@@ -118,7 +118,7 @@ void UPG_GameInstance::GetPlayerData(UPG_QuickBarComponent* QuickBarComponent)
 	PlayerData = PlayerDataFunction[QuickBarComponent->PlayerTypeData]();
 
 
-	UPG_ItemsSubsystem* ItemsSubsystem = GetSubsystem<UPG_ItemsSubsystem>();
+	UPG_PlayerDataSubsystem* ItemsSubsystem = GetSubsystem<UPG_PlayerDataSubsystem>();
 	check(ItemsSubsystem)
 	FOnItemParsed ItemParsed;
 	ItemParsed.AddDynamic(this, &ThisClass::SetParsedItemData);

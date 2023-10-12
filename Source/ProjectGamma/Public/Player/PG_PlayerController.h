@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/PG_CoreTypes.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "Player/CIS_PlayerController.h"
 #include "PG_PlayerController.generated.h"
 

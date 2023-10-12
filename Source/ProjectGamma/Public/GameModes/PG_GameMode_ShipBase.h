@@ -36,7 +36,7 @@ public:
 	virtual void OnPlayerInitializedClientData(UPG_QuickBarComponent* QuickBarComponent) override;
 
 	UFUNCTION()
-	void SetParsedItemData(APG_ShipBasePlayerController* PlayerController, FShipData ShipData);
+	void SetParsedRoomData(APG_ShipBasePlayerController* PlayerController, FShipData ShipData);
 	
 private:
 

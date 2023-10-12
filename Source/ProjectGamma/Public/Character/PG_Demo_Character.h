@@ -23,5 +23,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPG_CharacterPresets_Component* CharacterPresets;
-	
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void ShowOnlyComponent(UPrimitiveComponent* Component);
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void RemoveShowOnlyComponent(UPrimitiveComponent* Component);
 };

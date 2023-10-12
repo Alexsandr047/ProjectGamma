@@ -6,7 +6,7 @@
 #include "InventorySystem/PG_QuickBarComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/GameMode.h"
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "PG_GameMode.generated.h"
 
 

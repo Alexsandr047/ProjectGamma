@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 
 #include "JsonObjectConverter.h"
 #include "Core/CIS_CoreTypes.h"
@@ -16,19 +16,19 @@
 #include "Player/PG_PlayerController.h"
 
 
-UPG_GameInstance* UPG_ItemsSubsystem::GetGameGameInstance()
+UPG_GameInstance* UPG_PlayerDataSubsystem::GetGameGameInstance()
 {
 	if(!GameInstance)
 		GameInstance = Cast<UPG_GameInstance>(GetGameInstance());
 	return GameInstance;
 }
 
-FString UPG_ItemsSubsystem::GetPlayerID()
+FString UPG_PlayerDataSubsystem::GetPlayerID()
 {	
 	return  GetGameGameInstance()->GetPlayerId();
 }
 
-void UPG_ItemsSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData)
+void UPG_PlayerDataSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData)
 {
 	check(QuickBarComponent);
 	
@@ -40,21 +40,13 @@ void UPG_ItemsSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponen
 		const TSharedPtr<FJsonObject>* JsonObject;
 		JsonValue->TryGetObject(JsonObject);
 		
-		switch (QuickBarComponent->PlayerTypeData)
+		if(QuickBarComponent->PlayerTypeData ==  EPlayerDataType::Commander)
 		{
-		case EPlayerDataType::Commander:
 			Character_Data = NewObject<UPG_Character_PlayerData>(this);
 			const TSharedPtr<FJsonObject>* CommanderObject;
 			JsonObject->Get()->TryGetObjectField("Commander", CommanderObject);
 			ParseCharacterItem(CommanderObject, Cast<UPG_Character_PlayerData>(Character_Data));
 			QuickBarComponent->SetParsedPlayerData(Character_Data);
-			break;
-			
-		case EPlayerDataType::Squad:
-			break;
-			
-		case EPlayerDataType::ShipBase:
-			break;
 		}
 				
 		ItemParsed.Broadcast(QuickBarComponent, Character_Data);
@@ -66,7 +58,7 @@ void UPG_ItemsSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponen
 	}
 }
 
-void UPG_ItemsSubsystem::SaveJsonFile()
+void UPG_PlayerDataSubsystem::SaveJsonFile()
 {
 	/*TArray<FUnmodifiableItemBase> Attachments;
 	FUnmodifiableItemBase Scope;
@@ -160,7 +152,7 @@ void UPG_ItemsSubsystem::SaveJsonFile()
     }*/
 }
 
-bool UPG_ItemsSubsystem::ParseCharacterItem(const TSharedPtr<FJsonObject>* JsonObject, UPG_Character_PlayerData* Character_Data)
+bool UPG_PlayerDataSubsystem::ParseCharacterItem(const TSharedPtr<FJsonObject>* JsonObject, UPG_Character_PlayerData* Character_Data)
 {
 	if(!JsonObject->IsValid())
 		return false;
@@ -264,12 +256,12 @@ bool UPG_ItemsSubsystem::ParseCharacterItem(const TSharedPtr<FJsonObject>* JsonO
 	
 	return Clothes;
 }*/
-TArray<UCIS_ItemDefinition*> UPG_ItemsSubsystem::GetItemsDefinitions() const
+TArray<UCIS_ItemDefinition*> UPG_PlayerDataSubsystem::GetItemsDefinitions() const
 {
 	return ItemDefinitions;
 }
 
-UCIS_ItemDefinition* UPG_ItemsSubsystem::GetSlotDefinition(EPG_EWeaponSlots Slot) const
+UCIS_ItemDefinition* UPG_PlayerDataSubsystem::GetSlotDefinition(EPG_EWeaponSlots Slot) const
 {
 	UCIS_ItemDefinition* Item;
 	Item = nullptr;
@@ -286,7 +278,7 @@ UCIS_ItemDefinition* UPG_ItemsSubsystem::GetSlotDefinition(EPG_EWeaponSlots Slot
 	return Item;
 }
 
-bool UPG_ItemsSubsystem::MakeLootDropList(FString LootDropID, TArray<FModifiableItemBase>& Items)
+bool UPG_PlayerDataSubsystem::MakeLootDropList(FString LootDropID, TArray<FModifiableItemBase>& Items)
 {
 	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ LootDropID +".json";
 	FString JsonString; //Json converted to FString
@@ -345,7 +337,7 @@ bool UPG_ItemsSubsystem::MakeLootDropList(FString LootDropID, TArray<FModifiable
 	return false;
 }
 
-void UPG_ItemsSubsystem::ReadLastCommanderFile()
+void UPG_PlayerDataSubsystem::ReadLastCommanderFile()
 {
 	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/LastCommander.json";
 	FString JsonString; //Json converted to FString

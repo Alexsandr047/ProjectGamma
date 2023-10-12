@@ -49,6 +49,18 @@ void UPG_Hub_RoomsSubsystem::ReadJsonFileAndMakeShipData(APG_ShipBasePlayerContr
 					ShipData.ShipRooms.Add(RoomData);
 			}
 		}
+		const TArray<TSharedPtr<FJsonValue>>* SquadsJsonData;
+		JsonObject->Get()->TryGetArrayField("Squads",SquadsJsonData);
+		for (const auto& RoomValue : *RoomsJsonData)
+		{
+			const TSharedPtr<FJsonObject>* RoomValueObject;
+			if(RoomValue->TryGetObject(RoomValueObject))
+			{
+				FShipRoomBase RoomData;
+				if(FJsonObjectConverter::JsonObjectToUStruct<FShipRoomBase>(RoomValueObject->ToSharedRef(), &RoomData, 0, 0))
+					ShipData.ShipRooms.Add(RoomData);
+			}
+		}
 	}
 	ItemParsed.Broadcast(PlayerController, ShipData);
 }
@@ -56,11 +68,15 @@ void UPG_Hub_RoomsSubsystem::ReadJsonFileAndMakeShipData(APG_ShipBasePlayerContr
 void UPG_Hub_RoomsSubsystem::WriteJsonFileAboutShipData(APG_ShipBasePlayerController* PlayerController,
 	APG_Hub_MapGenerator* MapGenerator)
 {
-	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/ShipData.json";
+	UPG_GameInstance* GI = Cast<UPG_GameInstance>(GetGameInstance());
+	if(!GI)
+	check(PlayerController);
+	
+	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ GI->GetPlayerId() +"/ShipData.json";
 	FString JsonString;
 
 	TSharedPtr<FJsonObject> JsonObj = MakeShareable(new FJsonObject);
-	JsonObj->SetStringField("Player", "TestID");
+	JsonObj->SetStringField("Player", GI->GetPlayerId());
 	JsonObj->SetStringField("DateTo", MapGenerator->DateTo.ToString());
 
 	TArray<TSharedPtr<FJsonValue> > RoomsObjArray;	
@@ -77,7 +93,6 @@ void UPG_Hub_RoomsSubsystem::WriteJsonFileAboutShipData(APG_ShipBasePlayerContro
 	JsonObj->SetArrayField("Rooms", RoomsObjArray);
 
 	TArray<TSharedPtr<FJsonValue> > TreeObjArray;
-	UGameInstance* GI = GetGameInstance();
 	UPG_Skill_Subsystem* Skill_Subsystem = GI->GetSubsystem<UPG_Skill_Subsystem>();
 	check(Skill_Subsystem);
 

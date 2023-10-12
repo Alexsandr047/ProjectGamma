@@ -138,6 +138,8 @@ struct FShipData
 	TArray<FSkillParseData> Technologies;
 	
 	TArray<FShipResourceBase> ShipResources;
+
+	TArray<FSquad> Squads;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeUpdate, const  FDateTime&, DateTime);

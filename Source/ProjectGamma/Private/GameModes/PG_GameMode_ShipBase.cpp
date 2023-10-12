@@ -3,7 +3,7 @@
 
 #include "GameModes/PG_GameMode_ShipBase.h"
 
-#include "InventorySystem/PG_ItemsSubsystem.h"
+#include "InventorySystem/PG_PlayerDataSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Map/Hub/PG_Hub_RoomsSubsystem.h"
 #include "OnlineBeaconHost.h"
@@ -29,11 +29,11 @@ void APG_GameMode_ShipBase::OnPlayerInitializedClientData(UPG_QuickBarComponent*
 	check(RoomsSubsystem);
 
 	FOnShipDataParsed ShipDataParsed;
-	ShipDataParsed.AddDynamic(this, &ThisClass::SetParsedItemData);
+	ShipDataParsed.AddDynamic(this, &ThisClass::SetParsedRoomData);
 	RoomsSubsystem->ReadJsonFileAndMakeShipData(Cast<APG_ShipBasePlayerController>(QuickBarComponent->GetPlayerController()), ShipDataParsed);	
 }
 
-void APG_GameMode_ShipBase::SetParsedItemData(APG_ShipBasePlayerController* PlayerController,
+void APG_GameMode_ShipBase::SetParsedRoomData(APG_ShipBasePlayerController* PlayerController,
 	FShipData ShipData)
 {
 	//MapGenerator = Cast<APG_Hub_MapGenerator>(UGameplayStatics::GetActorOfClass(this, APG_Hub_MapGenerator::StaticClass()));

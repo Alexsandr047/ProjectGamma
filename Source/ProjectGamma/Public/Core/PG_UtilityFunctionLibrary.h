@@ -18,4 +18,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static bool GetUseBackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	static FString GenerateID(int32 Length);
 };
