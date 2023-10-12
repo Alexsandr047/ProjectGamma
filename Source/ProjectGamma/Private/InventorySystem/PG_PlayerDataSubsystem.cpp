@@ -20,7 +20,7 @@
 #include "Player/PG_PlayerController.h"
 
 
-UPG_GameInstance* UPG_PlayerDataSubsystem::GetGameGameInstance()
+UPG_GameInstance* UPG_PlayerDataSubsystem::GetGameInstance()
 {
 	if(!GameInstance)
 		GameInstance = Cast<UPG_GameInstance>(GetGameInstance());
@@ -29,7 +29,7 @@ UPG_GameInstance* UPG_PlayerDataSubsystem::GetGameGameInstance()
 
 FString UPG_PlayerDataSubsystem::GetPlayerID()
 {	
-	return  GetGameGameInstance()->GetPlayerId();
+	return  GetGameInstance()->GetPlayerId();
 }
 
 void UPG_PlayerDataSubsystem::ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData)
@@ -402,8 +402,8 @@ void UPG_PlayerDataSubsystem::ReadJsonFileAndMakeShipData(FString PlayerData, UP
 void UPG_PlayerDataSubsystem::WriteJsonFileAboutShipData(APG_ShipBasePlayerController* PlayerController,
 	APG_Hub_MapGenerator* MapGenerator)
 {
-	UPG_GameInstance* GI = GetGameGameInstance();
-	if(!GI)
+	UPG_GameInstance* GI = GetGameInstance();
+	check(GI);
 	check(PlayerController);
 	
 	const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ GI->GetPlayerId() +"/ShipData.json";
@@ -469,3 +469,38 @@ void UPG_PlayerDataSubsystem::WriteJsonFileAboutShipData(APG_ShipBasePlayerContr
 	}
 }
 
+/*
+void UPG_PlayerDataSubsystem::GetSquadsData(TArray<FSquad>& Squads)
+{
+	UPG_GameInstance* GI = GetGameInstance();
+	check(GI);	
+
+	TArray<FSquad> TempSquads;
+	
+	const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(GI->GetSquadsData());
+	TSharedPtr<FJsonValue> JsonValue;
+	
+	if (FJsonSerializer::Deserialize(Reader, JsonValue) && JsonValue.IsValid())
+	{
+		const TSharedPtr<FJsonObject>* JsonObject;
+		JsonValue->TryGetObject(JsonObject);
+		
+		FString DateTo = "";
+
+		const TArray<TSharedPtr<FJsonValue>>* SquadsJsonData;
+		JsonObject->Get()->TryGetArrayField("Squads",SquadsJsonData);
+		for (const auto& RoomValue : *SquadsJsonData)
+		{
+			const TSharedPtr<FJsonObject>* RoomValueObject;
+			if(RoomValue->TryGetObject(RoomValueObject))
+			{
+				FSquad SquadData;
+				if(FJsonObjectConverter::JsonObjectToUStruct<FSquad>(RoomValueObject->ToSharedRef(), &SquadData, 0, 0))
+					TempSquads.Add(SquadData);
+			}
+		}
+	}
+
+	Squads = TempSquads;
+}
+*/

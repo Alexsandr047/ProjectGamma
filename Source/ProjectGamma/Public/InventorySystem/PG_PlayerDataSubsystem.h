@@ -28,7 +28,7 @@ class PROJECTGAMMA_API UPG_PlayerDataSubsystem : public UGameInstanceSubsystem
 
 public:
 
-	UPG_GameInstance* GetGameGameInstance();
+	UPG_GameInstance* GetGameInstance();
 	FString GetPlayerID();
 	UFUNCTION()
 	void ParsePlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed, FString PlayerData);
@@ -54,6 +54,12 @@ public:
 	void ReadJsonFileAndMakeShipData(FString PlayerData, UPG_Ship_PlayerData* Ship_PlayerData);
 	UFUNCTION()
 	void WriteJsonFileAboutShipData(APG_ShipBasePlayerController* PlayerController, APG_Hub_MapGenerator* MapGenerator);
+
+
+	//Squad
+	/*UFUNCTION(BlueprintCallable)
+	void GetSquadsData(TArray<FSquad>& Squads);*/
+	
 
 protected:
 	

@@ -230,6 +230,9 @@ struct FSquad
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name = "";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString BannerID = "";
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString CommanderId = "";
@@ -242,6 +245,10 @@ struct FSquad
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString FighterThree = "";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool CurrentSquad = false;
+	
 };
 
 USTRUCT(BlueprintType)

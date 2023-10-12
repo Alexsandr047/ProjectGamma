@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/PG_CoreTypes.h"
 #include "GameFramework/Actor.h"
 #include "PG_Hub_HangarRoom.generated.h"
 
@@ -15,12 +16,22 @@ public:
 	// Sets default values for this actor's properties
 	APG_Hub_HangarRoom();
 
+	/*UFUNCTION(BlueprintCallable)
+	TArray<FSquad> GetSquadsData() const { return Squads; }
+
+	UFUNCTION(BlueprintCallable)
+	bool CreateSquad(FSquad Squad);
+
+	UFUNCTION(BlueprintCallable)
+	bool DeleteSquad(const FString& SquadId);
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeSquad(const FString& SquadId, FSquad Squad);*/
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	UPROPERTY()
+	TArray<FSquad> Squads;
 };

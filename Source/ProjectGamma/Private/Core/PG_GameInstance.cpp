@@ -42,12 +42,6 @@ FString UPG_GameInstance::GetShipBaseData()
 	{
 		const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ GetPlayerId() +"/ShipData.json";
 		FFileHelper::LoadFileToString(JsonString,*JsonFilePath);
-		/*UPG_ItemsSubsystem* ItemsSubsystem = GetSubsystem<UPG_ItemsSubsystem>();
-		check(ItemsSubsystem);
-	
-		FOnItemParsed ItemParsed;
-		ItemParsed.AddDynamic(this, &ThisClass::SetParsedItemData);
-		ItemsSubsystem->ReadJsonAndMakeItems(Player,ItemParsed);*/
 	}
 	return JsonString;
 }
@@ -92,6 +86,22 @@ FString UPG_GameInstance::GetSquadData()
 	return JsonString;
 }
 
+FString UPG_GameInstance::GetSquadsData()
+{
+	FString JsonString = "";
+	
+	if(UPG_UtilityFunctionLibrary::GetUseBackEnd())
+	{
+		
+	}
+	else
+	{
+		const FString JsonFilePath = FPaths::ProjectSavedDir() + "JsonFiles/"+ GetPlayerId() +"/SquadsData.json";
+		FFileHelper::LoadFileToString(JsonString,*JsonFilePath);
+	}
+	return JsonString;
+}
+
 void UPG_GameInstance::AuthorizePlayer(const FString& _PlayerId, const FString _Password)
 {
 	if(UPG_UtilityFunctionLibrary::GetUseBackEnd())
@@ -121,7 +131,7 @@ void UPG_GameInstance::GetPlayerData(UPG_QuickBarComponent* QuickBarComponent, F
 	PlayerData = PlayerDataFunction[QuickBarComponent->PlayerTypeData]();
 
 
-	UPG_PlayerDataSubsystem* ItemsSubsystem = GetSubsystem<UPG_PlayerDataSubsystem>();
-	check(ItemsSubsystem)
-	ItemsSubsystem->ParsePlayerData(QuickBarComponent,ItemParsed, PlayerData);
+	UPG_PlayerDataSubsystem* PlayerDataSubsystem = GetSubsystem<UPG_PlayerDataSubsystem>();
+	check(PlayerDataSubsystem)
+	PlayerDataSubsystem->ParsePlayerData(QuickBarComponent,ItemParsed, PlayerData);
 }

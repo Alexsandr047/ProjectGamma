@@ -44,6 +44,7 @@ private:
 	FString GetCommanderData();
 	TFunction<FString()> TGetSquadData;
 	FString GetSquadData();
+
 public:
 
 	UFUNCTION(BlueprintCallable,  Category = "Authorization")
@@ -58,5 +59,7 @@ public:
 
 	void GetPlayerData(UPG_QuickBarComponent* QuickBarComponent, FOnItemParsed ItemParsed);
 
+
+	FString GetSquadsData();
 };
 
