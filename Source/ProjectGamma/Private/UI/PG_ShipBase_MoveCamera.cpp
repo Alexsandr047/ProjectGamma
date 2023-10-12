@@ -2,7 +2,6 @@
 
 
 #include "UI/PG_ShipBase_MoveCamera.h"
-
 #include "Character/PG_ShipBase.h"
 
 void UPG_ShipBase_MoveCamera::NativeConstruct()
@@ -22,8 +21,7 @@ void UPG_ShipBase_MoveCamera::Init(APlayerController* Controller)
 
 FReply UPG_ShipBase_MoveCamera::NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-
-	MoveCamera(InMouseEvent.GetScreenSpacePosition());
+	//MoveCamera(InMouseEvent.GetScreenSpacePosition());
 	return Super::NativeOnMouseMove(InGeometry, InMouseEvent);
 }
 

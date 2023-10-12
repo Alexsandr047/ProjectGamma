@@ -19,7 +19,7 @@ void UPG_TouchScreen::NativeConstruct()
 FReply UPG_TouchScreen::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	bStartMove = true;
-	LastPosition = InMouseEvent.GetScreenSpacePosition();
+	//LastPosition = InMouseEvent.GetScreenSpacePosition();
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 }
 
@@ -37,7 +37,7 @@ FReply UPG_TouchScreen::NativeOnMouseMove(const FGeometry& InGeometry, const FPo
 	{
 		/*FVector Alpha =  FMath::VInterpTo(FVector(StartPosition.X,StartPosition.Y, 0.f), FVector(Position.X, Position.Y, 0.f), DeltaTick,0.1);*/
 		FVector2D Position;
-		Position = InMouseEvent.GetScreenSpacePosition();
+		//Position = InMouseEvent.GetScreenSpacePosition();
 
 		FVector2d TouchMoveValue;	
 
