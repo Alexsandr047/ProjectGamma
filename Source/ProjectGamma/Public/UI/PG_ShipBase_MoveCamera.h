@@ -53,5 +53,5 @@ public:
 
 	virtual FReply NativeOnMouseMove( const FGeometry& InGeometry, const FPointerEvent& InMouseEvent ) override;
 	
-	void MoveCamera(FVector2D Position);
+	void MoveCamera(FVector2f Position);
 };

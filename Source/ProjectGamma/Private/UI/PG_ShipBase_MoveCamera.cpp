@@ -21,11 +21,11 @@ void UPG_ShipBase_MoveCamera::Init(APlayerController* Controller)
 
 FReply UPG_ShipBase_MoveCamera::NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	//MoveCamera(InMouseEvent.GetScreenSpacePosition());
+	//MoveCamera(FVector2f(InMouseEvent.GetScreenSpacePosition().Y,InMouseEvent.GetScreenSpacePosition().X));
 	return Super::NativeOnMouseMove(InGeometry, InMouseEvent);
 }
 
-void UPG_ShipBase_MoveCamera::MoveCamera(FVector2D Position)
+void UPG_ShipBase_MoveCamera::MoveCamera(FVector2f Position)
 {
 
 	/*if(!PlayerController)
